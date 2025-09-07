@@ -27,7 +27,7 @@ public class Book {
     @JoinColumn(name = "status", nullable = false)
     private Status status;
 
-    @Column(name = "publish_date, nullable = false")
+    @Column(name = "publish_date", nullable = true)
     private Date publishDate;
 
 

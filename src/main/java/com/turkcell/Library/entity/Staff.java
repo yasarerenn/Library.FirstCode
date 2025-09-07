@@ -1,7 +1,6 @@
 package com.turkcell.Library.entity;
 
 import jakarta.persistence.*;
-
 import java.util.List;
 
 @Entity

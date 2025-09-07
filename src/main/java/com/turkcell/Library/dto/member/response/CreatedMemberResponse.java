@@ -1,36 +1,25 @@
-package com.turkcell.Library.entity;
-
-import jakarta.persistence.*;
+package com.turkcell.Library.dto.member.response;
 
 import java.util.Date;
-import java.util.List;
 
-@Entity
-@Table(name = "member", schema = "lb2")
-public class Member {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+public class CreatedMemberResponse {
     private int id;
-
-    @Column(name = "first_name")
     private String firstName;
-
-    @Column(name = "last_name")
     private String lastName;
-
-    @Column(name = "email")
     private String email;
-
-    @Column(name = "phone")
     private int phone;
-
-    @Column(name = "registration_date")
     private Date registrationDate;
 
-    @OneToMany(mappedBy = "member")
-    private List<Loan> loans;
+    public CreatedMemberResponse() {}
+
+    public CreatedMemberResponse(int id, String firstName, String lastName, String email, int phone, Date registrationDate) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.registrationDate = registrationDate;
+    }
 
     public int getId() {
         return id;
@@ -78,13 +67,5 @@ public class Member {
 
     public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
-    }
-
-    public List<Loan> getLoans() {
-        return loans;
-    }
-
-    public void setLoans(List<Loan> loans) {
-        this.loans = loans;
     }
 }

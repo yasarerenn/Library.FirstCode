@@ -21,7 +21,7 @@ public class Category {
     @JsonIgnore
     private List<Book> books;
 
-    public int getCategoryId(int categoryId) {
+    public int getCategoryId() {
         return this.categoryId;
     }
 
