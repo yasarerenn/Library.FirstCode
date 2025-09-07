@@ -24,7 +24,7 @@ public class Book {
     private Category category;
 
     @ManyToOne()
-    @JoinColumn(name = "status_id", nullable = false)
+    @JoinColumn(name = "status", nullable = false)
     private Status status;
 
     @Column(name = "publish_date, nullable = false")

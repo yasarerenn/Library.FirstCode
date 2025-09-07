@@ -1,5 +1,6 @@
 package com.turkcell.Library.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -17,10 +18,11 @@ public class Category {
     private String categoryName;
 
     @OneToMany(mappedBy = "category")
+    @JsonIgnore
     private List<Book> books;
 
-    public int getCategoryId() {
-        return categoryId;
+    public int getCategoryId(int categoryId) {
+        return this.categoryId;
     }
 
     public void setCategoryId(int categoryId) {

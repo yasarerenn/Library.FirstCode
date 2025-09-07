@@ -1,5 +1,6 @@
 package com.turkcell.Library.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class Status {
     private String status_name;
 
     @OneToMany(mappedBy = "status")
+    @JsonIgnore
     private List<Book> books;
 
     public Integer getStatus_id() {
