@@ -1,15 +1,21 @@
 package com.turkcell.Library.service;
 
+import com.turkcell.Library.dto.book.request.CreateBookRequest;
+import com.turkcell.Library.dto.book.request.UpdateBookRequest;
+import com.turkcell.Library.dto.book.response.CreatedBookResponse;
 import com.turkcell.Library.entity.Book;
 import com.turkcell.Library.entity.Category;
 import com.turkcell.Library.entity.Status;
 import com.turkcell.Library.repository.BookRepository;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Validated
 public class BookService {
     private final BookRepository bookRepository;
     private final CategoryService categoryService;
@@ -29,38 +35,36 @@ public class BookService {
         return bookRepository.findById(id);
     }
 
-    public Book createBook(Book book) {
+    public CreatedBookResponse createBook(@Valid CreateBookRequest createBookRequest) {
         // Validate category and status exist
-        if (book.getCategory() != null) {
-            categoryService.getCategoryById(book.getCategory().getCategoryId())
+        categoryService.getCategoryById(createBookRequest.getCategoryId())
                     .orElseThrow(() -> new RuntimeException("Category not found"));
-        }
-        if (book.getStatus() != null) {
-            statusService.getStatusById(book.getStatus().getStatus_id())
+
+        statusService.getStatusById(createBookRequest.getStatusId())
                     .orElseThrow(() -> new RuntimeException("Status not found"));
-        }
-        return bookRepository.save(book);
+
+        Book book = convertToBook(createBookRequest);
+
+        Book newCreatedBook = bookRepository.save(book);
+        return convertToBookResponse(newCreatedBook);
     }
 
-    public Book updateBook(int id, Book bookDetails) {
+    public Book updateBook(int id, @Valid UpdateBookRequest bookDetails) {
+        Book requestBook = convertToBook(bookDetails);
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found with id: " + id));
 
-        book.setTitle(bookDetails.getTitle());
-        book.setAuthor(bookDetails.getAuthor());
-        book.setPublishDate(bookDetails.getPublishDate());
+        book.setTitle(requestBook.getTitle());
+        book.setAuthor(requestBook.getAuthor());
+        book.setPublishDate(requestBook.getPublishDate());
 
-        if (bookDetails.getCategory() != null) {
-            Category category = categoryService.getCategoryById(bookDetails.getCategory().getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category not found"));
-            book.setCategory(category);
-        }
+        Category category = categoryService.getCategoryById(bookDetails.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+        book.setCategory(category);
 
-        if (bookDetails.getStatus() != null) {
-            Status status = statusService.getStatusById(bookDetails.getStatus().getStatus_id())
-                    .orElseThrow(() -> new RuntimeException("Status not found"));
-            book.setStatus(status);
-        }
+        Status status = statusService.getStatusById(bookDetails.getStatusId())
+                .orElseThrow(() -> new RuntimeException("Status not found"));
+        book.setStatus(status);
 
         return bookRepository.save(book);
     }
@@ -76,6 +80,10 @@ public class BookService {
         return bookRepository.findByCategory_CategoryId(categoryId);
     }
 
+    public List<Book> getBooksByCategoryName(String categoryName) {
+        return bookRepository.searchByCategory(categoryName);
+    }
+
     public List<Book> getBooksByStatus(int statusId) {
         return bookRepository.findByStatusId(statusId);
     }
@@ -86,5 +94,52 @@ public class BookService {
 
     public List<Book> searchBooksByAuthor(String author) {
         return bookRepository.findByAuthorContainingIgnoreCase(author);
+    }
+
+    private Book convertToBook(CreateBookRequest request) {
+        Book book = new Book();
+        book.setTitle(request.getTitle());
+        book.setAuthor(request.getAuthor());
+        book.setPublishDate(request.getPublishDate());
+
+        Category category = new Category();
+        category.setCategoryId(request.getCategoryId());
+        book.setCategory(category);
+
+        Status status = new Status();
+        status.setStatus_id(request.getStatusId());
+        book.setStatus(status);
+
+        return book;
+    }
+
+    private CreatedBookResponse convertToBookResponse(Book book) {
+        return new CreatedBookResponse(
+                book.getId(),
+                book.getTitle(),
+                book.getAuthor(),
+                book.getCategory().getCategoryId(),
+                book.getCategory().getCategoryName(),
+                book.getStatus().getStatus_id(),
+                book.getStatus().getStatus_name(),
+                book.getPublishDate()
+        );
+    }
+
+    private Book convertToBook(UpdateBookRequest request) {
+        Book book = new Book();
+        book.setTitle(request.getTitle());
+        book.setAuthor(request.getAuthor());
+        book.setPublishDate(request.getPublishDate());
+
+        Category category = new Category();
+        category.setCategoryId(request.getCategoryId());
+        book.setCategory(category);
+
+        Status status = new Status();
+        status.setStatus_id(request.getStatusId());
+        book.setStatus(status);
+
+        return book;
     }
 }

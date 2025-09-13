@@ -15,4 +15,8 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
 
     List<Book> findByTitleContainingIgnoreCase(String title);
     List<Book> findByAuthorContainingIgnoreCase(String author);
+
+    @Query(value = "select * from book b join category c on b.category = c.category_id " +
+            "where LOWER(c.category_name) LIKE LOWER(:categoryName)", nativeQuery = true)
+    List<Book> searchByCategory(String categoryName);
 }

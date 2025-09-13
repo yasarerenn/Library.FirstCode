@@ -46,9 +46,8 @@ public class BookController {
     @PostMapping
     public ResponseEntity<CreatedBookResponse> createBook(@RequestBody CreateBookRequest request) {
         try {
-            Book book = convertToBook(request);
-            Book savedBook = bookService.createBook(book);
-            return ResponseEntity.status(HttpStatus.CREATED).body(convertToBookResponse(savedBook));
+            CreatedBookResponse savedBook = bookService.createBook(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedBook);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
         }
@@ -57,8 +56,7 @@ public class BookController {
     @PutMapping("/{id}")
     public ResponseEntity<CreatedBookResponse> updateBook(@PathVariable int id, @RequestBody UpdateBookRequest request) {
         try {
-            Book bookDetails = convertToBook(request);
-            Book updatedBook = bookService.updateBook(id, bookDetails);
+            Book updatedBook = bookService.updateBook(id, request);
             return ResponseEntity.ok(convertToBookResponse(updatedBook));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -78,6 +76,15 @@ public class BookController {
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<CreatedBookResponse>> getBooksByCategory(@PathVariable int categoryId) {
         List<Book> books = bookService.getBooksByCategory(categoryId);
+        List<CreatedBookResponse> response = books.stream()
+                .map(this::convertToBookResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/category/name/{categoryName}")
+    public ResponseEntity<List<CreatedBookResponse>> getBooksByCategoryName(@PathVariable String categoryName) {
+        List<Book> books = bookService.getBooksByCategoryName(categoryName);
         List<CreatedBookResponse> response = books.stream()
                 .map(this::convertToBookResponse)
                 .collect(Collectors.toList());

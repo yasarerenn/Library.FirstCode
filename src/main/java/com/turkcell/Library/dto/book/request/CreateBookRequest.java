@@ -1,12 +1,25 @@
 package com.turkcell.Library.dto.book.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+
 import java.util.Date;
 
 public class CreateBookRequest {
+    @Size(min = 10, max = 50)
+    @NotBlank
     private String title;
+    @NotBlank
     private String author;
+    @Positive
+    @NotBlank
     private int categoryId;
+    @Positive
+    @NotBlank
     private int statusId;
+    @PastOrPresent
     private Date publishDate;
 
     public CreateBookRequest() {}
