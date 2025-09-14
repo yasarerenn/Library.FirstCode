@@ -81,7 +81,7 @@ public class BookService {
     }
 
     public List<Book> getBooksByCategoryName(String categoryName) {
-        return bookRepository.searchByCategory(categoryName);
+        return bookRepository.findByCategory_CategoryNameContainingIgnoreCase(categoryName);
     }
 
     public List<Book> getBooksByStatus(int statusId) {
