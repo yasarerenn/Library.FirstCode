@@ -2,11 +2,10 @@ package com.turkcell.Library.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
 import java.util.List;
 
 @Entity
-@Table(name = "category", schema = "lb2")
+@Table(name = "category")
 public class Category {
 
     @Id
@@ -14,26 +13,21 @@ public class Category {
     @Column(name = "category_id")
     private int categoryId;
 
-    @Column(name = "category_name")
+    @Column(name = "category_name", nullable = false, unique = true)
     private String categoryName;
 
-    @OneToMany(mappedBy = "category")
+    // Book.category tarafındaki ilişkiyi ters yönde tutarız.
     @JsonIgnore
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<Book> books;
 
-    public int getCategoryId() {
-        return this.categoryId;
-    }
+    // -- getters/setters --
+    public int getCategoryId() { return categoryId; }
+    public void setCategoryId(int categoryId) { this.categoryId = categoryId; }
 
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
-    }
+    public String getCategoryName() { return categoryName; }
+    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
 
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
+    public List<Book> getBooks() { return books; }
+    public void setBooks(List<Book> books) { this.books = books; }
 }

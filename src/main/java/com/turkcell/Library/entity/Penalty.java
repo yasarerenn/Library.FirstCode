@@ -1,10 +1,9 @@
 package com.turkcell.Library.entity;
 
-
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "penalty", schema = "lb2")
+@Table(name = "penalty")
 public class Penalty {
 
     @Id
@@ -12,57 +11,33 @@ public class Penalty {
     @Column(name = "penalty_id")
     private int penalty_id;
 
-    @ManyToOne
-    @JoinColumn(name = "loan")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "loan") // FK: penalty.loan -> loan.loan_id
     private Loan loan;
 
-    @ManyToOne
-    @JoinColumn(name = "staff")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "staff") // cezayı oluşturan/onaylayan personel
     private Staff staff;
 
-    @Column(name = "amount")
+    @Column(name = "amount", nullable = false)
     private int amount;
 
-    @Column(name = "paid")
+    @Column(name = "paid", nullable = false)
     private boolean paid;
 
-    public int getPenalty_id() {
-        return penalty_id;
-    }
+    // -- getters/setters --
+    public int getPenalty_id() { return penalty_id; }
+    public void setPenalty_id(int penalty_id) { this.penalty_id = penalty_id; }
 
-    public void setPenalty_id(int penalty_id) {
-        this.penalty_id = penalty_id;
-    }
+    public Loan getLoan() { return loan; }
+    public void setLoan(Loan loan) { this.loan = loan; }
 
-    public Loan getLoan() {
-        return loan;
-    }
+    public Staff getStaff() { return staff; }
+    public void setStaff(Staff staff) { this.staff = staff; }
 
-    public void setLoan(Loan loan) {
-        this.loan = loan;
-    }
+    public int getAmount() { return amount; }
+    public void setAmount(int amount) { this.amount = amount; }
 
-    public Staff getStaff() {
-        return staff;
-    }
-
-    public void setStaff(Staff staff) {
-        this.staff = staff;
-    }
-
-    public int getAmount() {
-        return amount;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
-    public boolean isPaid() {
-        return paid;
-    }
-
-    public void setPaid(boolean paid) {
-        this.paid = paid;
-    }
+    public boolean isPaid() { return paid; }
+    public void setPaid(boolean paid) { this.paid = paid; }
 }
